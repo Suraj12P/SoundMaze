@@ -144,7 +144,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Support
 
-If you encounter any accessibility issues or have suggestions for improvements, please open an issue on GitHub or contact us at [your-email@example.com].
+If you encounter any accessibility issues or have suggestions for improvements, please open an issue on GitHub or contact us at [surajpmnr@gmail.com].
 
 ## Development
 
