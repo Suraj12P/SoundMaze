@@ -64,9 +64,6 @@ SoundMaze is a web-based maze navigation game that uses spatial audio cues and k
 3. Select source branch (usually `main` or `master`)
 4. Your game will be available at `https://yourusername.github.io/repository-name`
 
-### Netlify
-1. Drag and drop the project folder to [Netlify](https://netlify.com)
-2. Your game will be deployed automatically
 
 ### Vercel
 1. Connect your GitHub repository to [Vercel](https://vercel.com)
@@ -144,7 +141,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Support
 
-If you encounter any accessibility issues or have suggestions for improvements, please open an issue on GitHub or contact us at [your-email@example.com].
+If you encounter any accessibility issues or have suggestions for improvements, please open an issue on GitHub or contact us at [surajpmnr@gmail.com].
 
 ## Development
 
@@ -154,6 +151,9 @@ Open the browser console (F12) and use these commands:
 - `debugSoundMaze()` - Get detailed debug information
 - `getSoundMazeStatus()` - Check application status
 
+
+## Demo
+<a href="https://youtu.be/BK2tvgdei1E" alt="Demo Video"> Youtube Video </a>
 ---
 
 **Made with ❤️ for visually impaired children everywhere** 
