@@ -40,37 +40,54 @@ class SoundMazeApp {
     }
 
     async initializeComponents() {
+        console.log('Initializing components...');
+        
+        // Wait a bit for all scripts to load
+        await new Promise(resolve => setTimeout(resolve, 50));
+        
         // Initialize audio manager first
         if (!window.audioManager) {
             console.warn('Audio manager not found, creating fallback');
-            // Create a minimal audio manager if the main one failed
             window.audioManager = this.createFallbackAudioManager();
+        } else {
+            console.log('Audio manager found and initialized');
         }
         
         // Initialize maze generator
         if (!window.mazeGenerator) {
             console.warn('Maze generator not found, creating fallback');
             window.mazeGenerator = this.createFallbackMazeGenerator();
+        } else {
+            console.log('Maze generator found and initialized');
         }
         
         // Initialize game manager
         if (!window.gameManager) {
             console.warn('Game manager not found, creating fallback');
             window.gameManager = this.createFallbackGameManager();
+        } else {
+            console.log('Game manager found and initialized');
         }
         
         // Initialize UI manager
         if (!window.uiManager) {
             console.warn('UI manager not found, creating fallback');
             window.uiManager = this.createFallbackUIManager();
+        } else {
+            console.log('UI manager found and initialized');
         }
         
         // Wait for audio context to be ready
         if (window.audioManager && window.audioManager.audioContext) {
             if (window.audioManager.audioContext.state === 'suspended') {
-                await window.audioManager.audioContext.resume();
+                console.log('Audio context is suspended, waiting for user interaction...');
+                // Don't try to resume here - let user interaction handle it
+            } else {
+                console.log('Audio context is ready');
             }
         }
+        
+        console.log('All components initialized');
     }
 
     createFallbackAudioManager() {

@@ -39,7 +39,13 @@ class GameManager {
     init() {
         this.maze = window.mazeGenerator;
         this.canvas = document.getElementById('maze-canvas');
-        this.ctx = this.canvas.getContext('2d');
+        
+        if (this.canvas) {
+            this.ctx = this.canvas.getContext('2d');
+            console.log('Canvas initialized successfully');
+        } else {
+            console.error('Canvas element not found');
+        }
         
         // Load settings
         this.loadSettings();
@@ -91,6 +97,13 @@ class GameManager {
     }
 
     startGame() {
+        console.log('GameManager.startGame() called');
+        
+        if (!this.maze) {
+            console.error('Maze generator not available');
+            return;
+        }
+        
         this.isRunning = true;
         this.isPaused = false;
         this.moves = 0;
@@ -99,6 +112,7 @@ class GameManager {
         this.lastMoveTime = Date.now();
         
         // Generate new maze
+        console.log('Generating maze with difficulty:', this.settings.difficulty);
         this.maze.generateMaze(this.settings.difficulty);
         
         // Start timer
@@ -119,7 +133,7 @@ class GameManager {
         // Announce game start
         this.announceToScreenReader('Game started. Use arrow keys to navigate the maze.');
         
-        console.log('Game started');
+        console.log('Game started successfully');
     }
 
     pauseGame() {
@@ -452,7 +466,17 @@ class GameManager {
     }
 
     renderMaze() {
-        if (!this.ctx || !this.maze) return;
+        if (!this.canvas || !this.ctx) {
+            console.error('Canvas not available for rendering');
+            return;
+        }
+        
+        if (!this.maze) {
+            console.error('Maze not available for rendering');
+            return;
+        }
+        
+        console.log('Rendering maze...');
         
         const canvas = this.canvas;
         const ctx = this.ctx;
@@ -507,6 +531,8 @@ class GameManager {
                 ctx.strokeRect(cellX, cellY, cellSize, cellSize);
             }
         }
+        
+        console.log('Maze rendered successfully');
     }
 
     updateUI() {

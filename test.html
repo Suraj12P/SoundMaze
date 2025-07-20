@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SoundMaze Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f0f0f0;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #2980b9;
+        }
+        .log {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px 0;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>SoundMaze Test Page</h1>
+        <p>This page tests the game initialization and start functionality.</p>
+        
+        <div>
+            <button class="test-button" onclick="testInitialization()">Test Initialization</button>
+            <button class="test-button" onclick="testStartGame()">Test Start Game</button>
+            <button class="test-button" onclick="clearLog()">Clear Log</button>
+        </div>
+        
+        <div class="log" id="log"></div>
+    </div>
+
+    <script>
+        function log(message) {
+            const logDiv = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            logDiv.innerHTML += `[${timestamp}] ${message}<br>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+            console.log(message);
+        }
+
+        function clearLog() {
+            document.getElementById('log').innerHTML = '';
+        }
+
+        function testInitialization() {
+            log('Testing initialization...');
+            
+            // Check if managers exist
+            log(`Audio Manager: ${window.audioManager ? 'Found' : 'Missing'}`);
+            log(`Maze Generator: ${window.mazeGenerator ? 'Found' : 'Missing'}`);
+            log(`Game Manager: ${window.gameManager ? 'Found' : 'Missing'}`);
+            log(`UI Manager: ${window.uiManager ? 'Found' : 'Missing'}`);
+            
+            // Check audio context
+            if (window.audioManager && window.audioManager.audioContext) {
+                log(`Audio Context State: ${window.audioManager.audioContext.state}`);
+            }
+            
+            // Check canvas
+            const canvas = document.getElementById('maze-canvas');
+            log(`Canvas: ${canvas ? 'Found' : 'Missing'}`);
+            
+            log('Initialization test complete');
+        }
+
+        function testStartGame() {
+            log('Testing start game...');
+            
+            if (window.uiManager) {
+                log('Calling uiManager.startGame()...');
+                window.uiManager.startGame();
+            } else {
+                log('ERROR: UI Manager not found');
+            }
+            
+            log('Start game test complete');
+        }
+
+        // Override console.log to also log to our display
+        const originalLog = console.log;
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            log(args.join(' '));
+        };
+
+        // Override console.error to also log to our display
+        const originalError = console.error;
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            log('ERROR: ' + args.join(' '));
+        };
+
+        // Override console.warn to also log to our display
+        const originalWarn = console.warn;
+        console.warn = function(...args) {
+            originalWarn.apply(console, args);
+            log('WARNING: ' + args.join(' '));
+        };
+
+        log('Test page loaded');
+    </script>
+
+    <!-- Load the game scripts -->
+    <script src="src/audio.js"></script>
+    <script src="src/maze.js"></script>
+    <script src="src/game.js"></script>
+    <script src="src/ui.js"></script>
+    <script src="src/app.js"></script>
+</body>
+</html> 

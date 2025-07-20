@@ -293,28 +293,54 @@ class UIManager {
     }
 
     startGame() {
+        console.log('Starting game...');
+        
+        // Show game screen first
         this.showGameScreen();
         
+        // Ensure all managers are initialized
+        if (!window.gameManager) {
+            console.error('Game manager not found');
+            this.announceToScreenReader('Error: Game manager not initialized');
+            return;
+        }
+        
+        if (!window.mazeGenerator) {
+            console.error('Maze generator not found');
+            this.announceToScreenReader('Error: Maze generator not initialized');
+            return;
+        }
+        
         // Initialize audio context if needed
-        if (window.audioManager && window.audioManager.audioContext && 
-            window.audioManager.audioContext.state === 'suspended') {
-            window.audioManager.audioContext.resume();
+        if (window.audioManager && window.audioManager.audioContext) {
+            if (window.audioManager.audioContext.state === 'suspended') {
+                console.log('Resuming audio context...');
+                window.audioManager.audioContext.resume().then(() => {
+                    console.log('Audio context resumed successfully');
+                }).catch(error => {
+                    console.error('Failed to resume audio context:', error);
+                });
+            }
         }
         
-        // Start the game
-        if (window.gameManager) {
-            window.gameManager.startGame();
-        }
-        
-        // Play menu sound
-        if (window.audioManager) {
-            window.audioManager.playMenuSound();
-        }
+        // Start the game with a small delay to ensure everything is ready
+        setTimeout(() => {
+            if (window.gameManager) {
+                window.gameManager.startGame();
+                console.log('Game started successfully');
+            }
+            
+            // Play menu sound
+            if (window.audioManager) {
+                window.audioManager.playMenuSound();
+            }
+        }, 100);
     }
 
     resumeGame() {
         if (window.gameManager) {
-            window.gameManager.pauseGame();
+            window.gameManager.pauseGame(); // This toggles pause state
+            this.hidePauseOverlay();
         }
     }
 
