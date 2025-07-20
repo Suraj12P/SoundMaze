@@ -188,6 +188,33 @@ class UIManager {
                 }
             });
         }
+
+        // Idle guidance checkbox
+        const idleGuidanceCheckbox = document.getElementById('idle-guidance');
+        
+        if (idleGuidanceCheckbox) {
+            idleGuidanceCheckbox.addEventListener('change', (e) => {
+                this.settings.idleGuidance = e.target.checked;
+                if (window.gameManager) {
+                    window.gameManager.settings.idleGuidance = e.target.checked;
+                }
+            });
+        }
+
+        // Idle timeout slider
+        const idleTimeoutSlider = document.getElementById('idle-timeout');
+        const idleTimeoutDisplay = document.getElementById('idle-timeout-display');
+        
+        if (idleTimeoutSlider && idleTimeoutDisplay) {
+            idleTimeoutSlider.addEventListener('input', (e) => {
+                const timeout = parseInt(e.target.value);
+                idleTimeoutDisplay.textContent = `${timeout} seconds`;
+                this.settings.idleTimeout = timeout * 1000; // Convert to milliseconds
+                if (window.gameManager) {
+                    window.gameManager.settings.idleTimeout = timeout * 1000;
+                }
+            });
+        }
     }
 
     handleKeyPress(event) {
@@ -382,6 +409,23 @@ class UIManager {
         if (screenReaderCheckbox) {
             screenReaderCheckbox.checked = this.settings.screenReaderMode || false;
         }
+
+        // Load idle guidance setting
+        const idleGuidanceCheckbox = document.getElementById('idle-guidance');
+        
+        if (idleGuidanceCheckbox) {
+            idleGuidanceCheckbox.checked = this.settings.idleGuidance !== false; // Default to true
+        }
+
+        // Load idle timeout setting
+        const idleTimeoutSlider = document.getElementById('idle-timeout');
+        const idleTimeoutDisplay = document.getElementById('idle-timeout-display');
+        
+        if (idleTimeoutSlider && idleTimeoutDisplay) {
+            const timeout = (this.settings.idleTimeout || 5000) / 1000; // Convert from milliseconds
+            idleTimeoutSlider.value = timeout;
+            idleTimeoutDisplay.textContent = `${timeout} seconds`;
+        }
     }
 
     saveSettings() {
@@ -391,13 +435,17 @@ class UIManager {
         const difficultySelect = document.getElementById('difficulty');
         const hapticCheckbox = document.getElementById('haptic-feedback');
         const screenReaderCheckbox = document.getElementById('screen-reader-mode');
+        const idleGuidanceCheckbox = document.getElementById('idle-guidance');
+        const idleTimeoutSlider = document.getElementById('idle-timeout');
         
         this.settings = {
             volume: volumeSlider ? parseInt(volumeSlider.value) : 80,
             speed: speedSlider ? parseFloat(speedSlider.value) : 1.0,
             difficulty: difficultySelect ? difficultySelect.value : 'medium',
             hapticFeedback: hapticCheckbox ? hapticCheckbox.checked : false,
-            screenReaderMode: screenReaderCheckbox ? screenReaderCheckbox.checked : false
+            screenReaderMode: screenReaderCheckbox ? screenReaderCheckbox.checked : false,
+            idleGuidance: idleGuidanceCheckbox ? idleGuidanceCheckbox.checked : true,
+            idleTimeout: idleTimeoutSlider ? parseInt(idleTimeoutSlider.value) * 1000 : 5000
         };
         
         // Save to localStorage

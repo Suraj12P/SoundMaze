@@ -12,6 +12,9 @@ class AudioManager {
         this.sounds = {};
         this.spatialAudio = true;
         this.hapticEnabled = false;
+        this.speechEnabled = true;
+        this.speechRate = 1.0;
+        this.speechVolume = 0.8;
         
         // Audio settings
         this.settings = {
@@ -19,7 +22,10 @@ class AudioManager {
             speed: 1.0,
             spatialAudio: true,
             hapticFeedback: false,
-            screenReaderMode: false
+            screenReaderMode: false,
+            speechGuidance: true,
+            speechRate: 1.0,
+            speechVolume: 0.8
         };
         
         this.init();
@@ -44,6 +50,9 @@ class AudioManager {
             this.panner.coneOuterAngle = 0;
             this.panner.coneOuterGain = 0;
             this.panner.connect(this.masterGain);
+
+            // Initialize speech synthesis
+            this.initSpeechSynthesis();
 
             // Initialize sounds
             await this.createSounds();
@@ -70,6 +79,167 @@ class AudioManager {
         for (const [name, data] of Object.entries(soundData)) {
             this.sounds[name] = await this.createAudioBuffer(data);
         }
+    }
+
+    // Initialize speech synthesis
+    initSpeechSynthesis() {
+        if ('speechSynthesis' in window) {
+            this.speechSynthesis = window.speechSynthesis;
+            this.speechUtterance = null;
+            
+            // Get available voices
+            this.loadVoices();
+            
+            // Listen for voice changes
+            this.speechSynthesis.addEventListener('voiceschanged', () => {
+                this.loadVoices();
+            });
+            
+            console.log('Speech synthesis initialized');
+        } else {
+            console.warn('Speech synthesis not supported');
+            this.speechEnabled = false;
+        }
+    }
+
+    // Load available voices
+    loadVoices() {
+        if (this.speechSynthesis) {
+            this.voices = this.speechSynthesis.getVoices();
+            // Prefer English voices
+            this.selectedVoice = this.voices.find(voice => 
+                voice.lang.startsWith('en') && voice.default
+            ) || this.voices.find(voice => 
+                voice.lang.startsWith('en')
+            ) || this.voices[0];
+        }
+    }
+
+    // Speak text with directional guidance
+    speakDirection(text, options = {}) {
+        if (!this.speechEnabled || !this.speechSynthesis || !this.settings.speechGuidance) {
+            return;
+        }
+
+        // Cancel any current speech
+        if (this.speechUtterance) {
+            this.speechSynthesis.cancel();
+        }
+
+        // Create new utterance
+        this.speechUtterance = new SpeechSynthesisUtterance(text);
+        
+        // Configure speech settings
+        this.speechUtterance.voice = this.selectedVoice;
+        this.speechUtterance.rate = this.settings.speechRate;
+        this.speechUtterance.volume = this.settings.speechVolume;
+        this.speechUtterance.pitch = options.pitch || 1.0;
+        
+        // Add directional emphasis for navigation words
+        if (options.direction) {
+            this.speechUtterance.pitch = 1.2; // Slightly higher pitch for directions
+        }
+
+        // Speak the text
+        this.speechSynthesis.speak(this.speechUtterance);
+    }
+
+    // Provide directional guidance
+    provideDirectionalGuidance(availableMoves, exitInfo) {
+        if (!this.speechEnabled || !this.settings.speechGuidance) return;
+
+        let guidance = '';
+        
+        // If no moves available
+        if (availableMoves.length === 0) {
+            guidance = 'You are trapped. No moves available.';
+        }
+        // If only one move available
+        else if (availableMoves.length === 1) {
+            guidance = `You can only move ${availableMoves[0]}.`;
+        }
+        // If multiple moves available, suggest best direction
+        else {
+            const bestDirection = this.getBestDirection(availableMoves, exitInfo);
+            guidance = `You can move ${availableMoves.join(', ')}. I suggest moving ${bestDirection}.`;
+        }
+
+        // Add exit information
+        if (exitInfo.isNearby) {
+            guidance += ' The exit is very close.';
+        } else if (exitInfo.distance < 5) {
+            guidance += ` The exit is ${Math.round(exitInfo.distance)} steps away.`;
+        }
+
+        this.speakDirection(guidance, { direction: true });
+    }
+
+    // Get the best direction to move based on exit location
+    getBestDirection(availableMoves, exitInfo) {
+        if (!exitInfo || !exitInfo.direction) {
+            return availableMoves[0]; // Return first available if no exit info
+        }
+
+        // Prefer moving toward exit
+        if (availableMoves.includes(exitInfo.direction)) {
+            return exitInfo.direction;
+        }
+
+        // If can't move toward exit, choose perpendicular direction
+        const perpendicularDirections = {
+            'north': ['east', 'west'],
+            'south': ['east', 'west'],
+            'east': ['north', 'south'],
+            'west': ['north', 'south']
+        };
+
+        const perpendicular = perpendicularDirections[exitInfo.direction] || [];
+        for (const dir of perpendicular) {
+            if (availableMoves.includes(dir)) {
+                return dir;
+            }
+        }
+
+        // Fallback to first available move
+        return availableMoves[0];
+    }
+
+    // Announce wall collision with direction
+    announceWallCollision(direction) {
+        const message = `Wall to the ${direction}. Try a different direction.`;
+        this.speakDirection(message, { direction: true });
+    }
+
+    // Announce successful movement
+    announceMovement(direction) {
+        const message = `Moved ${direction}.`;
+        this.speakDirection(message, { direction: true });
+    }
+
+    // Announce exit proximity
+    announceExitProximity(exitInfo) {
+        if (!exitInfo.isNearby) return;
+
+        let message = '';
+        if (exitInfo.isVisible) {
+            message = 'You can see the exit! Move toward it.';
+        } else {
+            message = 'The exit is very close. Keep exploring.';
+        }
+        
+        this.speakDirection(message, { direction: true });
+    }
+
+    // Announce level completion
+    announceLevelComplete(moves, time) {
+        const message = `Congratulations! Level complete in ${moves} moves and ${time}.`;
+        this.speakDirection(message, { pitch: 1.3 });
+    }
+
+    // Announce level restart
+    announceLevelRestart() {
+        const message = 'Level restarted. You are back at the starting position.';
+        this.speakDirection(message);
     }
 
     // Generate different wall sounds for different directions

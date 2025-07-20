@@ -16,13 +16,21 @@ class GameManager {
         this.canvas = null;
         this.ctx = null;
         
+        // Idle detection
+        this.lastMoveTime = 0;
+        this.idleTimer = null;
+        this.idleTimeout = 5000; // 5 seconds
+        this.idleGuidanceEnabled = true;
+        
         // Game settings
         this.settings = {
             difficulty: 'medium',
             audioEnabled: true,
             spatialAudio: true,
             hapticFeedback: false,
-            screenReaderMode: false
+            screenReaderMode: false,
+            idleGuidance: true,
+            idleTimeout: 5000
         };
         
         this.init();
@@ -88,12 +96,16 @@ class GameManager {
         this.moves = 0;
         this.startTime = Date.now();
         this.currentTime = 0;
+        this.lastMoveTime = Date.now();
         
         // Generate new maze
         this.maze.generateMaze(this.settings.difficulty);
         
         // Start timer
         this.startTimer();
+        
+        // Start idle detection
+        this.startIdleDetection();
         
         // Play start sound
         if (window.audioManager) {
@@ -117,10 +129,12 @@ class GameManager {
         
         if (this.isPaused) {
             this.stopTimer();
+            this.stopIdleDetection();
             this.showPauseOverlay();
             this.announceToScreenReader('Game paused. Press Escape to resume.');
         } else {
             this.startTimer();
+            this.startIdleDetection();
             this.hidePauseOverlay();
             this.announceToScreenReader('Game resumed.');
         }
@@ -137,6 +151,7 @@ class GameManager {
         this.moves = 0;
         this.startTime = Date.now();
         this.currentTime = 0;
+        this.lastMoveTime = Date.now();
         
         // Reset maze
         if (this.maze && typeof this.maze.resetMaze === 'function') {
@@ -150,6 +165,9 @@ class GameManager {
         // Restart timer
         this.startTimer();
         
+        // Restart idle detection
+        this.startIdleDetection();
+        
         // Update UI
         this.updateUI();
         this.renderMaze();
@@ -157,6 +175,7 @@ class GameManager {
         // Play restart sound
         if (window.audioManager) {
             window.audioManager.playMenuSound();
+            window.audioManager.announceLevelRestart();
         }
         
         // Announce restart
@@ -174,6 +193,7 @@ class GameManager {
         this.isRunning = false;
         this.isPaused = false;
         this.stopTimer();
+        this.stopIdleDetection();
         console.log('Game stopped');
     }
 
@@ -183,6 +203,13 @@ class GameManager {
         // Allow restart even when paused
         if (event.key === 'r' || event.key === 'R') {
             this.restartLevel();
+            event.preventDefault();
+            return;
+        }
+        
+        // Allow guidance request even when paused
+        if (event.key === 'g' || event.key === 'G') {
+            this.requestGuidance();
             event.preventDefault();
             return;
         }
@@ -237,9 +264,15 @@ class GameManager {
             this.updateUI();
             this.renderMaze();
             
+            // Update last move time for idle detection
+            this.lastMoveTime = Date.now();
+            this.resetIdleTimer();
+            
             // Play movement sound
             if (window.audioManager) {
                 window.audioManager.playMovementSound();
+                // Announce movement with speech
+                window.audioManager.announceMovement(direction);
             }
             
             // Check for win condition
@@ -251,6 +284,9 @@ class GameManager {
             // Provide audio feedback for walls and exit
             this.provideAudioFeedback();
             
+            // Provide directional guidance after movement
+            this.provideDirectionalGuidance();
+            
             // Announce position to screen reader if enabled
             if (this.settings.screenReaderMode) {
                 this.announceToScreenReader(this.maze.getPositionDescription());
@@ -261,6 +297,8 @@ class GameManager {
             // Play error sound for invalid move
             if (window.audioManager) {
                 window.audioManager.playErrorSound();
+                // Announce wall collision with speech
+                window.audioManager.announceWallCollision(direction);
             }
             
             // Announce wall collision
@@ -284,6 +322,102 @@ class GameManager {
         if (exitInfo.distance < 10) {
             window.audioManager.playExitBeacon(exitInfo.distance, exitInfo.angle);
         }
+    }
+
+    // Idle detection methods
+    startIdleDetection() {
+        if (!this.settings.idleGuidance) return;
+        
+        this.resetIdleTimer();
+        console.log('Idle detection started');
+    }
+
+    stopIdleDetection() {
+        if (this.idleTimer) {
+            clearTimeout(this.idleTimer);
+            this.idleTimer = null;
+        }
+        console.log('Idle detection stopped');
+    }
+
+    resetIdleTimer() {
+        // Clear existing timer
+        if (this.idleTimer) {
+            clearTimeout(this.idleTimer);
+        }
+        
+        // Set new timer
+        this.idleTimer = setTimeout(() => {
+            this.handleIdleTimeout();
+        }, this.settings.idleTimeout);
+    }
+
+    handleIdleTimeout() {
+        if (!this.isRunning || this.isPaused) return;
+        
+        console.log('Player idle for 5 seconds, providing guidance');
+        
+        // Get current game state
+        const availableMoves = this.maze.getAvailableMoves();
+        const exitInfo = this.maze.getExitInfo();
+        
+        // Provide directional guidance
+        if (window.audioManager) {
+            window.audioManager.provideDirectionalGuidance(availableMoves, exitInfo);
+        }
+        
+        // Announce to screen reader as well
+        if (this.settings.screenReaderMode) {
+            this.announceToScreenReader('You have been idle for 5 seconds. Here is some guidance.');
+        }
+        
+        // Reset timer for next idle check
+        this.resetIdleTimer();
+    }
+
+    // Provide directional guidance with speech
+    provideDirectionalGuidance() {
+        if (!window.audioManager) return;
+        
+        // Get current game state
+        const availableMoves = this.maze.getAvailableMoves();
+        const exitInfo = this.maze.getExitInfo();
+        
+        // Provide speech guidance
+        window.audioManager.provideDirectionalGuidance(availableMoves, exitInfo);
+        
+        // Provide audio feedback for walls and exit
+        const wallDirections = this.maze.getWallDirections();
+        for (const direction of wallDirections) {
+            window.audioManager.playWallSound(direction);
+        }
+        
+        // Play exit beacon sound
+        if (exitInfo.distance < 10) {
+            window.audioManager.playExitBeacon(exitInfo.distance, exitInfo.angle);
+        }
+    }
+
+    // Request guidance manually
+    requestGuidance() {
+        if (!this.isRunning) return;
+        
+        console.log('Manual guidance requested');
+        
+        // Get current game state
+        const availableMoves = this.maze.getAvailableMoves();
+        const exitInfo = this.maze.getExitInfo();
+        
+        // Provide directional guidance
+        if (window.audioManager) {
+            window.audioManager.provideDirectionalGuidance(availableMoves, exitInfo);
+        }
+        
+        // Announce to screen reader
+        this.announceToScreenReader('Guidance requested. Listen for directional instructions.');
+        
+        // Reset idle timer
+        this.resetIdleTimer();
     }
 
     handleLevelComplete() {

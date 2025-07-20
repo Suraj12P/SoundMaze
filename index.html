@@ -95,6 +95,7 @@
                     <li><strong>Escape:</strong> Pause game, return to menu</li>
                     <li><strong>R:</strong> Restart current level</li>
                     <li><strong>M:</strong> Toggle audio on/off</li>
+                    <li><strong>G:</strong> Request directional guidance</li>
                 </ul>
 
                 <h3>Audio Cues</h3>
@@ -103,6 +104,8 @@
                     <li><strong>Exit beacon:</strong> A pulsing sound guides you toward the exit</li>
                     <li><strong>Movement feedback:</strong> Footstep sounds confirm your movement</li>
                     <li><strong>Success sound:</strong> Celebration when you reach the exit</li>
+                    <li><strong>Speech guidance:</strong> Spoken directions help you navigate</li>
+                    <li><strong>Idle assistance:</strong> Automatic guidance after 5 seconds of inactivity</li>
                 </ul>
 
                 <h3>Tips</h3>
@@ -162,6 +165,20 @@
                         <input type="checkbox" id="screen-reader-mode" aria-label="Enable enhanced screen reader support">
                         Enhanced Screen Reader Mode
                     </label>
+                </div>
+
+                <div class="setting-group">
+                    <label>
+                        <input type="checkbox" id="idle-guidance" aria-label="Enable idle guidance" checked>
+                        Enable Idle Guidance (5 seconds)
+                    </label>
+                </div>
+
+                <div class="setting-group">
+                    <label for="idle-timeout">Idle Timeout (seconds):</label>
+                    <input type="range" id="idle-timeout" min="3" max="15" step="1" value="5" 
+                           aria-label="Adjust idle timeout from 3 to 15 seconds">
+                    <span id="idle-timeout-display">5 seconds</span>
                 </div>
             </section>
 
