@@ -154,6 +154,9 @@ Open the browser console (F12) and use these commands:
 - `debugSoundMaze()` - Get detailed debug information
 - `getSoundMazeStatus()` - Check application status
 
+
+## Demo
+<a href="https://youtu.be/BK2tvgdei1E" alt="Demo Video"> Youtube Video </a>
 ---
 
 **Made with ❤️ for visually impaired children everywhere** 
