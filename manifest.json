@@ -1,0 +1,78 @@
+{
+  "name": "SoundMaze - Audio-Guided Maze Game",
+  "short_name": "SoundMaze",
+  "description": "An accessible audio-guided maze game for visually impaired children",
+  "version": "1.0.0",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#2C3E50",
+  "theme_color": "#4A90E2",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en",
+  "categories": ["games", "education", "accessibility"],
+  "icons": [
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiByeD0iMjQiIGZpbGw9IiM0QTkwRTIiLz4KPHN2ZyB4PSI0OCIgeT0iNDgiIHdpZHRoPSI5NiIgaGVpZ2h0PSI5NiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJ3aGl0ZSI+CjxwYXRoIGQ9Ik0xMiAyQzEzLjEgMiAxNCAyLjkgMTQgNFYxMEMxNCAxMS4xIDEzLjEgMTIgMTIgMTJDMTAuOSAxMiAxMCAxMS4xIDEwIDEwVjRDMTAgMi45IDEwLjkgMiAxMiAyWiIvPgo8cGF0aCBkPSJNMTkgMTBDMTkuNTUgMTAgMjAgMTAuNDUgMjAgMTFWMTNDMjAgMTMuNTUgMTkuNTUgMTQgMTkgMTRDMTguNDUgMTQgMTggMTMuNTUgMTggMTNWMTFDMTggMTAuNDUgMTguNDUgMTAgMTkgMTBaIi8+CjxwYXRoIGQ9Ik01IDEwQzUuNTUgMTAgNiAxMC40NSA2IDExVjEzQzYgMTMuNTUgNS41NSAxNCA1IDE0QzQuNDUgMTQgNCAxMy41NSA0IDEzVjExQzQgMTAuNDUgNC40NSAxMCA1IDEwWiIvPgo8cGF0aCBkPSJNMTIgMThDMTMuMSAxOCAxNCAxOC45IDE0IDIwQzE0IDIxLjEgMTMuMSAyMiAxMiAyMkMxMC45IDIyIDEwIDIxLjEgMTAgMjBDMTAgMTguOSAxMC45IDE4IDEyIDE4WiIvPgo8cGF0aCBkPSJNMTIgNkMxMy4xIDYgMTQgNi45IDE0IDhWMTBDMTQgMTEuMSAxMy4xIDEyIDEyIDEyQzEwLjkgMTIgMTAgMTEuMSAxMCAxMFY4QzEwIDYuOSAxMC45IDYgMTIgNloiLz4KPC9zdmc+Cjwvc3ZnPgo=",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDUxMiA1MTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiByeD0iNjQiIGZpbGw9IiM0QTkwRTIiLz4KPHN2ZyB4PSIxMjgiIHk9IjEyOCIgd2lkdGg9IjI1NiIgaGVpZ2h0PSIyNTYiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0id2hpdGUiPgo8cGF0aCBkPSJNMTIgMkMxMy4xIDIgMTQgMi45IDE0IDRWMUMxNCAxMS4xIDEzLjEgMTIgMTIgMTJDMTAuOSAxMiAxMCAxMS4xIDEwIDEwVjRDMTAgMi45IDEwLjkgMiAxMiAyWiIvPgo8cGF0aCBkPSJNMTkgMTBDMTkuNTUgMTAgMjAgMTAuNDUgMjAgMTFWMUMwIDEzLjU1IDE5LjU1IDE0IDE5IDE0QzE4LjQ1IDE0IDE4IDEzLjU1IDE4IDEzVjExQzE4IDEwLjQ1IDE4LjQ1IDEwIDE5IDEwWiIvPgo8cGF0aCBkPSJNNSAxMEM1LjU1IDEwIDYgMTAuNDUgNiAxMVYxM0M2IDEzLjU1IDUuNTUgMTQgNSAxNEM0LjQ1IDE0IDQgMTMuNTUgNCAxM1YxMUM0IDEwLjQ1IDQuNDUgMTAgNSAxMFoiLz4KPHBhdGggZD0iTTEyIDE4QzEzLjEgMTggMTQgMTguOSAxNCAyMEMxNCAyMS4xIDEzLjEgMjIgMTIgMjJDMTAuOSAyMiAxMCAyMS4xIDEwIDIwQzEwIDE4LjkgMTAuOSAxOCAxMiAxOFoiLz4KPHBhdGggZD0iTTEyIDZDMTMuMSA2IDE0IDYuOSAxNCA4VjEwQzE0IDExLjEgMTMuMSAxMiAxMiAxMkMxMC45IDEyIDEwIDExLjEgMTAgMTBWOEMxMCA2LjkgMTAuOSA2IDEyIDZaIi8+Cjwvc3ZnPgo8L3N2Zz4K",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4MCIgaGVpZ2h0PSI3MjAiIHZpZXdCb3g9IjAgMCAxMjgwIDcyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjEyODAiIGhlaWdodD0iNzIwIiBmaWxsPSIjMkMzRTUwIi8+Cjx0ZXh0IHg9IjY0MCIgeT0iMTAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iNDgiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjNEE5MEUyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5Tb3VuZE1hemU8L3RleHQ+Cjx0ZXh0IHg9IjY0MCIgeT0iMTYwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiNFQ0YwRjEiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkF1ZGlvLWd1aWRlZCBtYXplIGdhbWUgZm9yIHZpc3VhbGx5IGltcGFpcmVkIGNoaWxkcmVuPC90ZXh0Pgo8L3N2Zz4K",
+      "sizes": "1280x720",
+      "type": "image/svg+xml",
+      "form_factor": "wide",
+      "label": "SoundMaze Main Menu"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Start New Game",
+      "short_name": "Play",
+      "description": "Start a new maze game",
+      "url": "/?action=start",
+      "icons": [
+        {
+          "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTYiIGhlaWdodD0iOTYiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzRBOTBFMiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTggNXYxNGwxMS03eiIvPgo8L3N2Zz4K",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Settings",
+      "short_name": "Settings",
+      "description": "Adjust game settings",
+      "url": "/?action=settings",
+      "icons": [
+        {
+          "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTYiIGhlaWdodD0iOTYiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzRBOTBFMiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDE1YzEuNjYgMCAzLTEuMzQgMy0zczEtMS4zNCAxLTMtMS4zNC0zLTMtM3MtMyAxLjM0LTMgMyAxLjM0IDMgMyAzem0wLTEwYzEuNjYgMCAzLTEuMzQgMy0zczEtMS4zNCAxLTMtMS4zNC0zLTMtM3MtMyAxLjM0LTMgMyAxLjM0IDMgMyAzem0wLTRjLS41NSAwLTEgLjQ1LTEgMXMuNDUgMSAxIDFzMS0uNDUgMS0xLS40NS0xLTEtMXoiLz4KPHBhdGggZD0iTTE5LjQzIDEyLjk3Yy4wNC0uMzIuMDctLjY0LjA3LS45N3MtLjAzLS42NS0uMDctLjk3bDIuMTEtMS42NWMuMTktLjE1LjI0LS40Mi4xMi0uNjRsLTIuMDEtMy40OWMtLjEyLS4yMi0uMzktLjMtLjYxLS4yMmwtMi40OS45OGEzLjkgMy45IDAgMCAwLTEuMTItLjY2bC0uMzctMi42NWMtLjA0LS4yNC0uMjQtLjQyLS40OS0uNDJoLTQuMDNjLS4yNSAwLS40NS4xOC0uNDkuNDJsLS4zNyAyLjY1Yy0uNDMuMTItLjgzLjM1LTEuMTIuNjZsLTIuNDktLjk4Yy0uMjItLjA4LS40OSAwLS42MS4yMmwtMi4wMSAzLjQ5Yy0uMTMuMjItLjA3LjQ5LjEyLjY0bDIuMTEgMS42NWMtLjA0LjMyLS4wNy42NC0uMDcuOTdzLjAzLjY1LjA3Ljk3bC0yLjExIDEuNjVjLS4xOS4xNS0uMjQuNDItLjEyLjY0bDIuMDEgMy40OWMuMTIuMjIuMzkuMy42MS4yMmwyLjQ5LS45OGEzLjkgMy45IDAgMCAwIDEuMTIuNjZsLjM3IDIuNjVjLjA0LjI0LjI0LjQyLjQ5LjQyaDQuMDNjLjI1IDAgLjQ1LS4xOC40OS0uNDJsLjM3LTIuNjVjLjQzLS4xMi44My0uMzUgMS4xMi0uNjZsMi40OS45OGMuMjIuMDguNDkgMCAuNjEtLjIybDIuMDEtMy40OWMuMTMtLjIyLjA3LS40OS0uMTItLjY0bC0yLjExLTEuNjV6Ii8+Cjwvc3ZnPgo=",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  },
+  "handle_links": "preferred",
+  "protocol_handlers": [
+    {
+      "protocol": "web+soundmaze",
+      "url": "/?maze=%s"
+    }
+  ]
+} 

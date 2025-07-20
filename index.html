@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SoundMaze - An audio-guided maze game for visually impaired children">
+    <meta name="keywords" content="accessibility, audio game, visually impaired, maze, children">
+    <title>SoundMaze - Audio-Guided Maze Game</title>
+    <link rel="stylesheet" href="src/styles.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4A90E2">
+</head>
+<body>
+    <div id="app" role="application" aria-label="SoundMaze Game">
+        <!-- Main Menu Screen -->
+        <main id="main-menu" class="screen active" role="main" aria-label="Main Menu">
+            <header>
+                <h1 id="game-title" tabindex="0">SoundMaze</h1>
+                <p id="game-subtitle" aria-label="Audio-guided maze game for visually impaired children">
+                    Navigate the maze using sound cues
+                </p>
+            </header>
+
+            <nav role="navigation" aria-label="Game Navigation">
+                <button id="start-game" class="menu-button primary" tabindex="0" aria-label="Start new game">
+                    Start Game
+                </button>
+                <button id="instructions" class="menu-button" tabindex="0" aria-label="View game instructions">
+                    How to Play
+                </button>
+                <button id="settings" class="menu-button" tabindex="0" aria-label="Game settings">
+                    Settings
+                </button>
+                <button id="about" class="menu-button" tabindex="0" aria-label="About SoundMaze">
+                    About
+                </button>
+            </nav>
+
+            <div id="menu-announcement" class="sr-only" aria-live="polite" aria-atomic="true">
+                Main menu loaded. Use Tab to navigate and Enter to select options.
+            </div>
+        </main>
+
+        <!-- Game Screen -->
+        <main id="game-screen" class="screen" role="main" aria-label="Game Play Area" aria-hidden="true">
+            <header class="game-header">
+                <h2 id="level-title" tabindex="0">Level 1</h2>
+                <div class="game-info">
+                    <span id="moves-counter" aria-label="Moves made">Moves: 0</span>
+                    <span id="timer" aria-label="Time elapsed">Time: 00:00</span>
+                </div>
+            </header>
+
+            <div id="game-container" role="application" aria-label="Maze Game Board">
+                <canvas id="maze-canvas" width="800" height="600" 
+                        role="img" 
+                        aria-label="Maze visualization"
+                        tabindex="0">
+                    Your browser does not support the canvas element.
+                </canvas>
+                
+                <div id="audio-controls" class="audio-panel">
+                    <button id="toggle-audio" class="audio-button" aria-label="Toggle audio on/off">
+                        🔊 Audio On
+                    </button>
+                    <button id="volume-up" class="audio-button" aria-label="Increase volume">+</button>
+                    <button id="volume-down" class="audio-button" aria-label="Decrease volume">-</button>
+                </div>
+            </div>
+
+            <div id="game-controls" class="controls-panel">
+                <button id="pause-game" class="control-button" aria-label="Pause game">Pause</button>
+                <button id="restart-level" class="control-button" aria-label="Restart current level">Restart</button>
+                <button id="back-to-menu" class="control-button" aria-label="Return to main menu">Menu</button>
+            </div>
+
+            <div id="game-announcement" class="sr-only" aria-live="assertive" aria-atomic="true">
+                Game started. Use arrow keys to move, spacebar to confirm actions.
+            </div>
+        </main>
+
+        <!-- Instructions Screen -->
+        <main id="instructions-screen" class="screen" role="main" aria-label="Game Instructions" aria-hidden="true">
+            <header>
+                <h2>How to Play</h2>
+                <button id="close-instructions" class="close-button" aria-label="Close instructions">×</button>
+            </header>
+
+            <section class="instructions-content">
+                <h3>Controls</h3>
+                <ul>
+                    <li><strong>Arrow Keys:</strong> Move your character through the maze</li>
+                    <li><strong>Spacebar:</strong> Confirm actions, restart level</li>
+                    <li><strong>Enter:</strong> Start game, select menu options</li>
+                    <li><strong>Escape:</strong> Pause game, return to menu</li>
+                    <li><strong>R:</strong> Restart current level</li>
+                    <li><strong>M:</strong> Toggle audio on/off</li>
+                </ul>
+
+                <h3>Audio Cues</h3>
+                <ul>
+                    <li><strong>Wall sounds:</strong> Different tones indicate walls in different directions</li>
+                    <li><strong>Exit beacon:</strong> A pulsing sound guides you toward the exit</li>
+                    <li><strong>Movement feedback:</strong> Footstep sounds confirm your movement</li>
+                    <li><strong>Success sound:</strong> Celebration when you reach the exit</li>
+                </ul>
+
+                <h3>Tips</h3>
+                <ul>
+                    <li>Listen carefully to the directional audio cues</li>
+                    <li>Take your time to explore the maze layout</li>
+                    <li>Use the exit beacon sound to guide your direction</li>
+                    <li>Don't worry about getting lost - you can always restart</li>
+                </ul>
+            </section>
+
+            <button id="start-from-instructions" class="menu-button primary" aria-label="Start game from instructions">
+                Start Game
+            </button>
+        </main>
+
+        <!-- Settings Screen -->
+        <main id="settings-screen" class="screen" role="main" aria-label="Game Settings" aria-hidden="true">
+            <header>
+                <h2>Settings</h2>
+                <button id="close-settings" class="close-button" aria-label="Close settings">×</button>
+            </header>
+
+            <section class="settings-content">
+                <div class="setting-group">
+                    <label for="audio-volume">Audio Volume:</label>
+                    <input type="range" id="audio-volume" min="0" max="100" value="80" 
+                           aria-label="Adjust audio volume from 0 to 100">
+                    <span id="volume-display">80%</span>
+                </div>
+
+                <div class="setting-group">
+                    <label for="audio-speed">Audio Speed:</label>
+                    <input type="range" id="audio-speed" min="0.5" max="2" step="0.1" value="1" 
+                           aria-label="Adjust audio playback speed from 0.5 to 2 times">
+                    <span id="speed-display">1.0x</span>
+                </div>
+
+                <div class="setting-group">
+                    <label for="difficulty">Difficulty Level:</label>
+                    <select id="difficulty" aria-label="Select game difficulty">
+                        <option value="easy">Easy</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="hard">Hard</option>
+                    </select>
+                </div>
+
+                <div class="setting-group">
+                    <label>
+                        <input type="checkbox" id="haptic-feedback" aria-label="Enable haptic feedback">
+                        Enable Haptic Feedback (if available)
+                    </label>
+                </div>
+
+                <div class="setting-group">
+                    <label>
+                        <input type="checkbox" id="screen-reader-mode" aria-label="Enable enhanced screen reader support">
+                        Enhanced Screen Reader Mode
+                    </label>
+                </div>
+            </section>
+
+            <div class="settings-actions">
+                <button id="save-settings" class="menu-button primary" aria-label="Save settings">Save Settings</button>
+                <button id="reset-settings" class="menu-button" aria-label="Reset to default settings">Reset to Default</button>
+            </div>
+        </main>
+
+        <!-- About Screen -->
+        <main id="about-screen" class="screen" role="main" aria-label="About SoundMaze" aria-hidden="true">
+            <header>
+                <h2>About SoundMaze</h2>
+                <button id="close-about" class="close-button" aria-label="Close about">×</button>
+            </header>
+
+            <section class="about-content">
+                <p>SoundMaze is an audio-guided maze game designed specifically for visually impaired children aged 6-12. Our mission is to create an engaging, educational experience that develops spatial awareness and problem-solving skills through audio-based navigation.</p>
+                
+                <h3>Accessibility Features</h3>
+                <ul>
+                    <li>Full keyboard navigation</li>
+                    <li>Spatial audio cues</li>
+                    <li>Screen reader compatibility</li>
+                    <li>Adjustable audio settings</li>
+                    <li>Haptic feedback support</li>
+                </ul>
+
+                <h3>Educational Benefits</h3>
+                <ul>
+                    <li>Improves spatial awareness</li>
+                    <li>Develops problem-solving skills</li>
+                    <li>Enhances audio processing</li>
+                    <li>Builds confidence in navigation</li>
+                </ul>
+
+                <p><strong>Version:</strong> 1.0.0</p>
+                <p><strong>License:</strong> MIT</p>
+            </section>
+        </main>
+
+        <!-- Pause Overlay -->
+        <div id="pause-overlay" class="overlay" role="dialog" aria-label="Game Paused" aria-hidden="true">
+            <div class="overlay-content">
+                <h2>Game Paused</h2>
+                <p>Press Escape to resume or select an option below.</p>
+                <div class="overlay-actions">
+                    <button id="resume-game" class="menu-button primary" aria-label="Resume game">Resume</button>
+                    <button id="restart-from-pause" class="menu-button" aria-label="Restart level">Restart</button>
+                    <button id="menu-from-pause" class="menu-button" aria-label="Return to menu">Menu</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Victory Overlay -->
+        <div id="victory-overlay" class="overlay" role="dialog" aria-label="Level Complete" aria-hidden="true">
+            <div class="overlay-content">
+                <h2>Level Complete! 🎉</h2>
+                <div id="victory-stats">
+                    <p>Moves: <span id="final-moves">0</span></p>
+                    <p>Time: <span id="final-time">00:00</span></p>
+                </div>
+                <div class="overlay-actions">
+                    <button id="next-level" class="menu-button primary" aria-label="Continue to next level">Next Level</button>
+                    <button id="restart-victory" class="menu-button" aria-label="Replay this level">Replay</button>
+                    <button id="menu-from-victory" class="menu-button" aria-label="Return to menu">Menu</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Screen -->
+        <div id="loading-screen" class="screen" role="main" aria-label="Loading Game" aria-hidden="true">
+            <div class="loading-content">
+                <h2>Loading SoundMaze...</h2>
+                <div class="loading-spinner" aria-label="Loading animation"></div>
+                <p>Please wait while we prepare your audio experience.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audio Context Initialization -->
+    <script src="src/audio.js"></script>
+    <script src="src/maze.js"></script>
+    <script src="src/game.js"></script>
+    <script src="src/ui.js"></script>
+    <script src="src/app.js"></script>
+</body>
+</html> 
